@@ -931,8 +931,77 @@ function respawnPlayer() {
 
 function updatePlayerModels() {
     // In a real game, this would update 3D models of all players
-    // For now, we're just logging the update
-    console.log('Updated player models based on presence:', room.presence);
+    Object.entries(room.presence).forEach(([clientId, playerData]) => {
+        if (clientId !== room.clientId && playerData.position) {
+            // Create or update player models based on their presence data
+            createOrUpdatePlayerModel(clientId, playerData);
+        }
+    });
+}
+
+function createOrUpdatePlayerModel(clientId, playerData) {
+    // Check if player model exists
+    let playerModel = scene.getObjectByName(`player-${clientId}`);
+    
+    if (!playerModel) {
+        // Create new player model
+        const geometry = new THREE.BoxGeometry(1, 2, 1);
+        const material = new THREE.MeshStandardMaterial({ 
+            color: playerData.team === 'red' ? 0xff5555 : 0x5555ff 
+        });
+        playerModel = new THREE.Mesh(geometry, material);
+        playerModel.name = `player-${clientId}`;
+        playerModel.castShadow = true;
+        scene.add(playerModel);
+        
+        // Add player name label
+        const username = room.peers[clientId]?.username || 'Player';
+        addPlayerNameLabel(playerModel, username, playerData.team);
+    }
+    
+    // Update player position and rotation
+    if (playerData.position) {
+        playerModel.position.set(
+            playerData.position.x,
+            playerData.position.y,
+            playerData.position.z
+        );
+    }
+    
+    if (playerData.rotation) {
+        playerModel.rotation.set(
+            playerData.rotation.x,
+            playerData.rotation.y,
+            playerData.rotation.z
+        );
+    }
+}
+
+function addPlayerNameLabel(playerModel, username, team) {
+    const canvas = document.createElement('canvas');
+    canvas.width = 256;
+    canvas.height = 64;
+    const context = canvas.getContext('2d');
+    
+    // Draw name background
+    context.fillStyle = team === 'red' ? 'rgba(255, 0, 0, 0.7)' : 'rgba(0, 0, 255, 0.7)';
+    context.fillRect(0, 0, canvas.width, canvas.height);
+    
+    // Draw name text
+    context.font = '30px Arial';
+    context.fillStyle = 'white';
+    context.textAlign = 'center';
+    context.textBaseline = 'middle';
+    context.fillText(username, canvas.width / 2, canvas.height / 2);
+    
+    // Create sprite texture
+    const texture = new THREE.CanvasTexture(canvas);
+    const material = new THREE.SpriteMaterial({ map: texture });
+    const sprite = new THREE.Sprite(material);
+    sprite.position.y = 2.5; // Position above player
+    sprite.scale.set(2, 0.5, 1);
+    
+    playerModel.add(sprite);
 }
 
 function updateGameElements(roomState) {
@@ -1098,4 +1167,3 @@ function startRenderLoop() {
 
 // Start the game
 init();
-
