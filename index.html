@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Castle Wars - Multiplayer</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div id="game-container">
+        <div id="game-ui">
+            <div id="team-info">
+                <div id="red-team-info" class="team-info">
+                    <div class="team-name">Red Team</div>
+                    <div id="red-team-score" class="team-score">0</div>
+                    <div id="red-flag-status" class="flag-status">Flag Safe</div>
+                </div>
+                <div id="timer">5:00</div>
+                <div id="blue-team-info" class="team-info">
+                    <div class="team-name">Blue Team</div>
+                    <div id="blue-team-score" class="team-score">0</div>
+                    <div id="blue-flag-status" class="flag-status">Flag Safe</div>
+                </div>
+            </div>
+            <div id="player-info">
+                <div id="health-bar">
+                    <div id="health-value"></div>
+                </div>
+                <div id="ammo">Arrows: <span id="ammo-count">10</span></div>
+                <div id="team-indicator"></div>
+            </div>
+        </div>
+
+        <div id="game-world">
+            <div id="loading">Loading Castle Wars...</div>
+            <canvas id="game-canvas"></canvas>
+        </div>
+
+        <div id="controls-info">
+            <p>WASD: Move | SPACE: Jump | SHIFT: Sprint</p>
+            <p>LEFT CLICK: Attack | RIGHT CLICK: Block/Aim</p>
+            <p>R: Reload | F: Interact | Q: Switch Weapon</p>
+        </div>
+
+        <div id="team-select" class="modal">
+            <div class="modal-content">
+                <h2>Choose Your Team</h2>
+                <div class="team-buttons">
+                    <button id="join-red" class="team-btn red-btn">Red Team</button>
+                    <button id="join-blue" class="team-btn blue-btn">Blue Team</button>
+                    <button id="join-auto" class="team-btn auto-btn">Auto Assign</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="class-select" class="modal hidden">
+            <div class="modal-content">
+                <h2>Choose Your Class</h2>
+                <div class="class-buttons">
+                    <button id="class-knight" class="class-btn">
+                        <div class="class-icon">⚔️</div>
+                        <div class="class-name">Knight</div>
+                        <div class="class-desc">Heavy armor, sword & shield</div>
+                    </button>
+                    <button id="class-archer" class="class-btn">
+                        <div class="class-icon">🏹</div>
+                        <div class="class-name">Archer</div>
+                        <div class="class-desc">Ranged attacks, light armor</div>
+                    </button>
+                    <button id="class-mage" class="class-btn">
+                        <div class="class-icon">🧙</div>
+                        <div class="class-name">Mage</div>
+                        <div class="class-desc">Magical abilities, area effects</div>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div id="game-over" class="modal hidden">
+            <div class="modal-content">
+                <h2 id="winning-team">Red Team Wins!</h2>
+                <div id="score-summary">
+                    <div class="team-score-summary">
+                        <span class="team-name">Red Team:</span>
+                        <span id="final-red-score" class="team-score">3</span>
+                    </div>
+                    <div class="team-score-summary">
+                        <span class="team-name">Blue Team:</span>
+                        <span id="final-blue-score" class="team-score">1</span>
+                    </div>
+                </div>
+                <button id="play-again" class="play-again-btn">Play Again</button>
+            </div>
+        </div>
+    </div>
+    
+    <script type="importmap">
+    {
+        "imports": {
+            "three": "https://cdn.jsdelivr.net/npm/three@0.151.3/build/three.module.js",
+            "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.151.3/examples/jsm/"
+        }
+    }
+    </script>
+    <script src="game.js" type="module"></script>
+<script defer src="https://static.cloudflareinsights.com/beacon.min.js/v8c78df7c7c0f484497ecbca7046644da1771523124516" integrity="sha512-8DS7rgIrAmghBFwoOTujcf6D9rXvH8xm8JQ1Ja01h9QX8EzXldiszufYa4IFfKdLUKTTrnSFXLDkUEOTrZQ8Qg==" data-cf-beacon='{"version":"2024.11.0","token":"4c6229722a6346bc8eb5cb0e5eae5d41","server_timing":{"name":{"cfCacheStatus":true,"cfEdge":true,"cfExtPri":true,"cfL4":true,"cfOrigin":true,"cfSpeedBrain":true},"location_startswith":null}}' crossorigin="anonymous"></script>
+</body>
+</html>
+
