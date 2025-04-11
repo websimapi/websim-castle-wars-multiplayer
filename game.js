@@ -709,11 +709,22 @@ function setupFirstPersonControls() {
     const playerPosition = room.presence[room.clientId].position;
     camera.position.set(playerPosition.x, playerPosition.y + 1.7, playerPosition.z);
     
-    // Lock pointer for first-person controls
-    renderer.domElement.requestPointerLock();
+    // Lock pointer for first-person controls with error handling
+    try {
+        renderer.domElement.requestPointerLock();
+    } catch (e) {
+        console.log("Initial pointer lock request failed:", e);
+        // Enable controls anyway so the game can still be played
+        controls.enabled = true;
+    }
     
     // Add pointer lock event listeners
     document.addEventListener('pointerlockchange', handlePointerLockChange);
+    document.addEventListener('pointerlockerror', (e) => {
+        console.log("Pointer lock error:", e);
+        // Enable controls in fallback mode when errors occur
+        controls.enabled = true;
+    });
 }
 
 function handlePointerLockChange() {
@@ -722,9 +733,15 @@ function handlePointerLockChange() {
     } else {
         controls.enabled = false;
         
-        // If game is active, request pointer lock again
+        // If game is active, request pointer lock again but handle rejection gracefully
         if (gameActive) {
-            renderer.domElement.requestPointerLock();
+            try {
+                renderer.domElement.requestPointerLock();
+            } catch (e) {
+                console.log("Pointer lock request failed:", e);
+                // Continue game in a fallback mode when pointer lock fails
+                controls.enabled = true;
+            }
         }
     }
 }
@@ -1095,8 +1112,14 @@ function endGame(winner) {
     // Show game over modal
     gameOverModal.classList.remove('hidden');
     
-    // Release pointer lock
-    document.exitPointerLock();
+    // Release pointer lock safely
+    try {
+        if (document.pointerLockElement) {
+            document.exitPointerLock();
+        }
+    } catch (e) {
+        console.log("Exit pointer lock failed:", e);
+    }
 }
 
 function restartGame() {
